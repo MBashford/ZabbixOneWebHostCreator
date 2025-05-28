@@ -1,6 +1,6 @@
 #!/usr/bin/env python 
-"""A tool for retrieving site data from service now, and
-creating zabbix hosts corresponding to each device"""
+"""A tool for automating zabbix host creation and deletion
+using informaiton retrieved from OneWeb API """
 __author__ = "Milo Bashford"
 
 import requests
@@ -447,6 +447,8 @@ class OneWebHostCreator:
 
         # close zabbix api and exit
         self.__write_logs("DONE!")
+        self.__zapi.logout()
+        exit(0)
 
 
 if __name__ == "__main__":
