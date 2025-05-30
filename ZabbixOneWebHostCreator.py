@@ -14,6 +14,13 @@ from typing import Union
 from zabbix_utils import ZabbixAPI
 
 
+# TO DO
+# ---------
+# 1. Store templategroup, template and hostgroup IDs in Creator Context
+# 2. Propogate host deletion/update from remote api
+# 3. parent host creator with specific api implementations inheritinng core funcitonality
+
+
 class OneWebHostCreator:
     urls = {
         "production": {
@@ -100,10 +107,10 @@ class OneWebHostCreator:
                 self.__write_logs(f"FATALERROR: Zabbix Host Group must not be empty")
                 exit(1)
 
-            if zabbix_behaviour in ["create", "update", "append"]:
+            if zabbix_behaviour in ["create", "update"]:
                 self.__zabbix_behaviour = zabbix_behaviour
             else:
-                self.__write_logs(f"FATALERROR: Zabbix beheaviour must be one of 'create', 'update', 'append'")
+                self.__write_logs(f"FATALERROR: Zabbix beheaviour must be one of 'create', 'update'")
                 exit(1)
 
         except Exception as e:
@@ -372,9 +379,10 @@ class OneWebHostCreator:
         })
 
 
-    def __create_zabbix_host(self, name, imei, tags):
+    def __create_zabbix_host(self, name, tags=[], macros=[], inventory={}):
         """"""
         try:
+
             if len(self.__get_zabbix_host(name)) != 0:
                 raise Exception(f"Host with name '{name}' already exists")
             else:
@@ -392,15 +400,15 @@ class OneWebHostCreator:
                     "templates": [
                         {"templateid": template[0]["templateid"]}
                     ],
-                    "macros": [
-                        {"macro": "{$REMOTE.IMEI}", "value": imei}
-                    ]
+                    "macros": macros,
+                    "inventory": inventory,
                 })
 
         except Exception as e:
             self.__write_logs([f"FATALERROR: Unable create zabbix Host {name}", str(e)])
             self.__zapi.logout()
             exit(1)
+
 
     def __write_logs(self, entry: Union[str, list]):
         try:
@@ -436,13 +444,20 @@ class OneWebHostCreator:
         # Make Hosts
         for host in self.__oneweb_hosts:
             self.__create_zabbix_host(
-                "OneWeb-TEST-" + host["place"]["id"],
-                host["id"],
-                [
+                name=host["name"],
+                tags=[
                     {"tag": "IMEI", "value": host["imei"]},
                     {"tag": "IMSI", "value": host["imsi"]},
-                    {"tag": "Location", "value": host["place"]["externalId"]}
-                ]
+                ],
+                macros=[
+                    {"macro": "{$REMOTE.IMEI}", "value": host["imei"]},
+                ],
+                inventory={
+                    "type": host["place"]["externalId"],
+                    "serialno_a": host["serialNumber"],
+                    "location_lat": host["location"]["features"][0]["geometry"]["coordinates"][0],
+                    "location_lon": host["location"]["features"][0]["geometry"]["coordinates"][1],
+                }
             )
 
         # close zabbix api and exit
