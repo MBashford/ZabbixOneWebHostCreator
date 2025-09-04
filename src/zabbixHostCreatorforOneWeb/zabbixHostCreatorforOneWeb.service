@@ -1,0 +1,17 @@
+#
+# /etc/systemd/system/zabbixHostCreatorforOneWeb.service
+#
+
+[Unit]
+Description=ZabbixHostCreatorForOneWeb: Creates Zabbix Hosts using data periodically retrieved from OneWeb APIs
+After=network.target
+
+[Service]
+Type=simple
+User=root
+WorkingDirectory=/etc/zabbixHostCreatorforOneWeb/
+ExecStart=/etc/zabbixHostCreatorforOneWeb/bin/python /etc/zabbixHostCreatorforOneWeb/zabbixHostCreatorforOneWeb.py --conf-path /var/configs/zabbixHostCreatorforOneWeb.conf
+Restart=no
+
+[Install]
+WantedBy=multi-user.target
