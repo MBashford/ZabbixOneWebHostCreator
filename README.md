@@ -40,22 +40,18 @@ Contains options specifying the log output file and for scheduling repeat host c
 Option | Description
 -- | --
 log_path | path to the log file or directory, the directory must already exist. If no file name is specified the default name `zabbixHostCreator.log` will be used. Leaving this seting blank will cause logs to be written in the modules root directory.
-update_interval* | specifies the time between repeat script executions in seconds when using the built-in scheduler. Setting this to 0 or blank will disable the built-in scheduler and cause the host-creator script to run only once.
+update_interval | specifies the time between repeat script executions in seconds when using the built-in scheduler. Setting this to 0 or blank will disable the built-in scheduler and cause the host-creator script to run only once.
 
-*Note ip spoofing not supported on some windows versions, setting this to True may cause traps to be lost
+Zabbix Host Creator for OneWeb must be restarted for settings changes to take effect.
 
-Pylicator must be restarted for settings changes to take effect.
-
-### Forwarding Rules ###
-Defines forwarding behaviour for traps recieved from different IPv4 addresses. Multiple forwarding destinations can be assigned to each origin. Rules are defined as key-value pairs with the stucture 
-"\<origin\> = \<destination 1\> \<destination 2\>". At present only IPv4 addresses are accepted. Below are some valid example rules:  
-```
-58.113.42.112 = 86.34.127.50:162
-0.0.0.0/0 = 172.0.0.1:162 192.168.1.86:162
-172.0.0.1/32 = 172.0.0.1:5432 192.168.0.1
-```
+### OneWeb ###
+Specify the credentials and OneWeb API target version for retriveing host data.
+-- | --
+client_id | unique client identifier for accessing the OneWEb Api
 
 If no destination port is specified in a rule, port 162 will be used by default.
+
+<img width="1253" height="749" alt="Image" src="https://github.com/user-attachments/assets/b29f477c-21c8-46cc-ae46-c2532b002cee" />
 
 
 ## Running Pylicator ##
