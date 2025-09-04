@@ -1,0 +1,25 @@
+[build-system]
+requires = ["setuptools >= 61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "zabbixHostCreatorforOneWeb"
+version = "0.1.0"
+requires-python = ">= 3.8"
+dependencies = [
+    "requests==2.32.3",
+    "schedule==1.2.0",
+    "zabbix-utils==2.0.2"
+]
+authors = [
+  {name = "Milo Bashford", email = "milobashford@gmail.com"},
+]
+description = "A tool for creating Zabbix Hosts from OneWeb APIs"
+readme = {file = "README.md", content-type = "text/markdown"}
+license = {file = "LICENSE"}
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.setuptools.package-data]
+"zabbixHostCreatorforOneWeb" = ["zabbixHostCreatorforOneWeb.service"]
